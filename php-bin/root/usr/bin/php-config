@@ -1,0 +1,113 @@
+#! /bin/sh
+
+SED="/usr/bin/sed"
+prefix="/opt/remi/php84/root/usr"
+datarootdir="/opt/remi/php84/root/usr/share"
+exec_prefix="/opt/remi/php84/root/usr"
+version="8.4.14"
+vernum="80414"
+include_dir="/opt/remi/php84/root/usr/include/php"
+lib_dir="/opt/remi/php84/root/usr/lib64"
+includes="-I$include_dir -I$include_dir/main -I$include_dir/TSRM -I$include_dir/Zend -I$include_dir/ext -I$include_dir/ext/date/lib"
+ldflags=""
+libs="  -lresolv -lcrypt -lutil -lm -ldl  -lxml2 -lssl -lcrypto -lpcre2-8 -lz"
+extension_dir="/opt/remi/php84/root/usr/lib64/php/modules"
+man_dir=`eval echo /opt/remi/php84/root/usr/share/man`
+program_prefix=""
+program_suffix=""
+exe_extension=""
+php_cli_binary=NONE
+php_cgi_binary=NONE
+configure_options=" '--build=x86_64-redhat-linux-gnu' '--host=x86_64-redhat-linux-gnu' '--program-prefix=' '--disable-dependency-tracking' '--prefix=/opt/remi/php84/root/usr' '--exec-prefix=/opt/remi/php84/root/usr' '--bindir=/opt/remi/php84/root/usr/bin' '--sbindir=/opt/remi/php84/root/usr/sbin' '--sysconfdir=/etc/opt/remi/php84' '--datadir=/opt/remi/php84/root/usr/share' '--includedir=/opt/remi/php84/root/usr/include' '--libdir=/opt/remi/php84/root/usr/lib64' '--libexecdir=/opt/remi/php84/root/usr/libexec' '--localstatedir=/var/opt/remi/php84' '--sharedstatedir=/var/opt/remi/php84/lib' '--mandir=/opt/remi/php84/root/usr/share/man' '--infodir=/opt/remi/php84/root/usr/share/info' '--enable-rtld-now' '--cache-file=../config.cache' '--with-libdir=lib64' '--with-config-file-path=/etc/opt/remi/php84' '--with-config-file-scan-dir=/etc/opt/remi/php84/php.d' '--disable-debug' '--with-pic' '--disable-rpath' '--without-pear' '--with-exec-dir=/opt/remi/php84/root/usr/bin' '--without-gdbm' '--with-openssl' '--with-system-ciphers' '--with-external-pcre' '--with-external-libcrypt' '--with-zlib' '--with-layout=GNU' '--with-libxml' '--with-system-tzdata' '--with-mhash' '--without-password-argon2' '--enable-dtrace' '--enable-sockets' '--enable-fpm' '--with-fpm-systemd' '--with-fpm-selinux' '--with-fpm-acl' '--enable-embed' '--disable-gd' '--disable-dom' '--disable-dba' '--without-unixODBC' '--without-mysqli' '--disable-pdo' '--disable-opcache' '--disable-phpdbg' '--without-ffi' '--disable-xmlreader' '--disable-xmlwriter' '--without-sodium' '--without-sqlite3' '--disable-phar' '--disable-fileinfo' '--without-curl' '--disable-posix' '--disable-xml' '--disable-simplexml' '--disable-exif' '--without-gettext' '--without-iconv' '--disable-ftp' '--without-bz2' '--disable-ctype' '--disable-shmop' '--disable-tokenizer' '--disable-sysvmsg' '--disable-sysvshm' '--disable-sysvsem' 'build_alias=x86_64-redhat-linux-gnu' 'host_alias=x86_64-redhat-linux-gnu' 'PKG_CONFIG_PATH=:/opt/remi/php84/root/usr/lib64/pkgconfig:/opt/remi/php84/root/usr/share/pkgconfig' 'LDFLAGS=-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld' 'EXTENSION_DIR=/opt/remi/php84/root/usr/lib64/php/modules' 'PHP_UNAME=Linux' 'PHP_BUILD_SYSTEM=Red Hat Enterprise Linux release 8.10 (Ootpa)' 'PHP_BUILD_PROVIDER=Remi'"
+php_sapis="apache2handler litespeed phpdbg  cli embed fpm cgi"
+ini_dir="/etc/opt/remi/php84/php.d"
+ini_path="/etc/opt/remi/php84"
+php_embed_type="shared"
+
+# Set php_cli_binary and php_cgi_binary if available
+for sapi in $php_sapis; do
+  case $sapi in
+  cli)
+    php_cli_binary="/opt/remi/php84/root/usr/bin/${program_prefix}php${program_suffix}${exe_extension}"
+    ;;
+  cgi)
+    php_cgi_binary="/opt/remi/php84/root/usr/bin/${program_prefix}php-cgi${program_suffix}${exe_extension}"
+    ;;
+  esac
+done
+
+# Determine which (if any) php binary is available
+if test "$php_cli_binary" != "NONE"; then
+  php_binary="$php_cli_binary"
+else
+  php_binary="$php_cgi_binary"
+fi
+
+# Set embed SAPI library path
+if test "$php_embed_type" = "shared"; then
+  php_embed_lib=libphp.so
+elif test "$php_embed_type" = "static"; then
+  php_embed_lib=libphp.a
+fi
+
+# Remove quotes
+configure_options=`echo $configure_options | $SED -e "s#'##g"`
+
+case "$1" in
+--prefix)
+  echo $prefix;;
+--includes)
+  echo $includes;;
+--ldflags)
+  echo $ldflags;;
+--libs)
+  echo $libs;;
+--extension-dir)
+  echo $extension_dir;;
+--include-dir)
+  echo $include_dir;;
+--lib-dir)
+  echo $lib_dir;;
+--lib-embed)
+  echo $php_embed_lib;;
+--php-binary)
+  echo $php_binary;;
+--php-sapis)
+  echo $php_sapis;;
+--configure-options)
+  echo $configure_options;;
+--man-dir)
+  echo $man_dir;;
+--ini-path)
+  echo $ini_path;;
+--ini-dir)
+  echo $ini_dir;;
+--version)
+  echo $version;;
+--vernum)
+  echo $vernum;;
+*)
+  cat << EOF
+Usage: $0 [OPTION]
+Options:
+  --prefix            [$prefix]
+  --includes          [$includes]
+  --ldflags           [$ldflags]
+  --libs              [$libs]
+  --extension-dir     [$extension_dir]
+  --include-dir       [$include_dir]
+  --lib-dir           [$lib_dir]
+  --lib-embed         [$php_embed_lib]
+  --man-dir           [$man_dir]
+  --php-binary        [$php_binary]
+  --php-sapis         [$php_sapis]
+  --ini-path          [$ini_path]
+  --ini-dir           [$ini_dir]
+  --configure-options [$configure_options]
+  --version           [$version]
+  --vernum            [$vernum]
+EOF
+  exit 1;;
+esac
+
+exit 0
