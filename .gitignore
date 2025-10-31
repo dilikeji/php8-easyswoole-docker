@@ -2,7 +2,7 @@
 /easyswoole/Temp/
 /easyswoole/Log/
 /easyswoole/vendor/
-
+/easyswoole/composer.lock
 # 其他常见忽略项
 .idea/
 .vscode/
