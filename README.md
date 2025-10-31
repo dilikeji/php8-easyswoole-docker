@@ -2,14 +2,49 @@
 
 #### yum git curl wget zip unzip epel-release remi-release-8.5.rpm
 
-Need to fork this repository first, and then write code in the easyswoole folder.
 
-需要先fork这个仓库，然后在easyswoole文件夹下编写代码。
+Need to clone this repository first, and then write code in the easyswoole folder, change repository url and push.
+
+需要先拉取这个仓库，然后在easyswoole文件夹下编写代码，改变仓库地址再推送到自己仓库。
 ```
 git clone https://github.com/dilikeji/php8-easyswoole-docker.git
 cd php8-easyswoole-docker
+git remote set-url origin https://github.com/YOURSELF/NEW-REPOSITORY.git
+git push -u origin master
+```
+
+Git pull your new repository on the server，use docker to start.
+
+在服务器上拉取你的新仓库代码，使用docker去启动它。
+```
+git clone https://github.com/YOURSELF/NEW-REPOSITORY.git
+cd NEW-REPOSITORY
 docker compose up -d
 ```
+Subsequent code updates with hot reload (no downtime):
+
+后续更新代码重载服务(不停机)：
+```
+git pull
+docker exec -it php8easyswoole /bin/bash
+php easyswoole.php server reload -mode=produce
+```
+Subsequent code updates with service restart (with downtime):
+
+后续更新代码重启服务(停机)：
+```
+git pull
+docker restart php8easyswoole
+```
+When developing on the Windows platform, you can use composer install --ignore-platform-reqs to install dependency packages conveniently for development.
+
+win平台上开发时，可以使用composer install --ignore-platform-reqs拉取依赖包，方便开发
+```
+git clone https://github.com/YOURSELF/NEW-REPOSITORY.git
+cd NEW-REPOSITORY
+composer install --ignore-platform-reqs
+```
+
 docker-compose.yml:
 ```
 services:
