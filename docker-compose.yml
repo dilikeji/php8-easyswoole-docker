@@ -3,7 +3,7 @@ services:
         #首次启动需要执行composer install安装依赖，后续启动可以注释掉；
         #php easyswoole.php server restart默认启动dev.php配置文件，通过-mode切换到其他配置文件
         #安装其他扩展可以docker exec -it php8easyswoole /bin/bash 进入容器，执行pecl install
-        command: composer install && php easyswoole.php server restart -mode=produce
+        command: sh -c "composer install && php easyswoole.php server restart -mode=produce"
         stdin_open: true
         tty: true
         container_name: php8easyswoole #这里修改容器名称
