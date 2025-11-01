@@ -62,7 +62,10 @@ services:
                     cpus: "1" #这里设置CPU核心数
                     memory: 512M #这里设置内存大小
         image: 912104410/php8easyswoole:latest
-        network_mode: "host" #这里设置网络模式为host，使用宿主机网络，端口9501
+        ports:
+            - "9501:9501"  #默认端口9501
+        networks:
+            - my_network
         restart: on-failure:5 #这里设置重启策略为失败时重启，最多重启5次
         volumes:
             - ./easyswoole:/root #这里挂载easyswoole项目
@@ -70,4 +73,7 @@ services:
             - ./php-bin:/opt/remi/php84 #挂载php可执行文件和扩展,后续安装新扩展也在这里
             - ./libpq.so.5:/usr/lib64/libpq.so.5 #pgsql用到的库，如不用可不挂载
             - ./libpq.so.5.13:/usr/lib64/libpq.so.5.13 #pgsql用到的库，如不用可不挂载
+networks:
+  my_network:
+    driver: bridge
 ```
